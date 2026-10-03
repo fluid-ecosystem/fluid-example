@@ -1,0 +1,58 @@
+name: Test Database Examples
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      fluid_builder_ref:
+        description: 'fluid-builder ref to test against'
+        required: false
+        default: main
+
+jobs:
+  postgres-jdbc:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      # Same reasoning as run-the-echosystem.yml: build fluid-builder from
+      # source so a PR against it is tested here too, not whatever was last
+      # published to Docker Hub.
+      - name: Checkout fluid-builder
+        uses: actions/checkout@v4
+        with:
+          repository: fluid-ecosystem/fluid-builder
+          ref: ${{ github.event.inputs.fluid_builder_ref || 'main' }}
+          path: .fluid-builder
+
+      - name: Build fluid-builder base image from source
+        run: docker build -t maifeeulasad/fluid-builder:latest -f .fluid-builder/Dockerfile .fluid-builder
+
+      - name: Start the postgres-jdbc example
+        run: docker compose --profile postgres-jdbc up -d --build
+
+      - name: Wait for completion
+        run: |
+          set -uo pipefail
+          deadline=$(( SECONDS + 120 ))
+          ok=false
+          while [ $SECONDS -lt $deadline ]; do
+            if docker compose logs example-postgres-jdbc 2>/dev/null | grep -q "Postgres JDBC example completed successfully: 5 rows read back"; then
+              ok=true
+              break
+            fi
+            sleep 5
+          done
+          docker compose logs example-postgres-jdbc
+          if [ "$ok" != "true" ]; then
+            echo "::error::example-postgres-jdbc did not report success."
+            exit 1
+          fi
+
+      - name: Cleanup
+        if: always()
+        run: docker compose --profile postgres-jdbc down -v

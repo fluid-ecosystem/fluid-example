@@ -1,0 +1,26 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: postgres
+    environment:
+      - POSTGRES_DB=fluid
+      - POSTGRES_USER=fluid
+      - POSTGRES_PASSWORD=fluid
+    ports:
+      # Host port 5433, not 5432 — the conventional default collides with a
+      # locally installed Postgres often enough to be worth avoiding.
+      - "5433:5432"
+    # Readiness, not liveness: pg_isready against the actual database name
+    # proves the server has finished initdb and accepts connections to it,
+    # not merely that the process is running.
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U fluid -d fluid"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 10s
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:

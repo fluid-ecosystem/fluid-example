@@ -58,5 +58,28 @@ services:
     environment:
       - BOOTSTRAP_SERVERS=kafka:9092
 
+  # Shared by every Postgres-backed example (JDBC, Hibernate); each brings
+  # its own tables, so one instance is enough.
+  postgres:
+    extends:
+      file: docker-compose.postgres.yaml
+      service: postgres
+    profiles: ["postgres-jdbc", "postgres-hibernate"]
+
+  # Raw JDBC, no ORM. Run with `docker compose --profile postgres-jdbc up --build`.
+  example-postgres-jdbc:
+    profiles: ["postgres-jdbc"]
+    build:
+      context: ./example-postgres-jdbc
+    container_name: example-postgres-jdbc
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      - POSTGRES_URL=jdbc:postgresql://postgres:5432/fluid
+      - POSTGRES_USER=fluid
+      - POSTGRES_PASSWORD=fluid
+
 volumes:
   kafka_data:
+  postgres_data:

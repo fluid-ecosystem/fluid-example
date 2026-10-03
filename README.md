@@ -11,9 +11,9 @@ each one a `Dockerfile` + `pom.xml` + plain `.java` files on top of
 |---|---|---|
 | [example-send](example-send) / [example-receive](example-receive) | Minimal matched Kafka producer/consumer pair | `docker compose up --build` (default) |
 | [example-advanced-send](example-advanced-send) / [example-advanced-receive](example-advanced-receive) | Full producer/consumer API: keys, batches, headers, dead letters, retries, custom partitioning | `docker compose --profile advanced up --build` |
+| [example-postgres-jdbc](example-postgres-jdbc) | Database read/write, no ORM — raw `java.sql` against Postgres | `docker compose --profile postgres-jdbc up --build` |
 
-More examples — database read/write with and without an ORM (Postgres,
-MongoDB, H2; JDBC and Hibernate) — are tracked in
+More examples — Postgres with Hibernate (ORM), MongoDB, H2 — are tracked in
 [#14](https://github.com/fluid-ecosystem/fluid-example/issues/14) and land
 incrementally as their own modules.
 
