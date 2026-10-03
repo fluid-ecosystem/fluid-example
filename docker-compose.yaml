@@ -88,6 +88,24 @@ services:
       context: ./example-h2
     container_name: example-h2
 
+  mongo:
+    extends:
+      file: docker-compose.mongo.yaml
+      service: mongo
+    profiles: ["mongo"]
+
+  example-mongo:
+    profiles: ["mongo"]
+    build:
+      context: ./example-mongo
+    container_name: example-mongo
+    depends_on:
+      mongo:
+        condition: service_healthy
+    environment:
+      - MONGO_URI=mongodb://mongo:27017
+
 volumes:
   kafka_data:
   postgres_data:
+  mongo_data:
