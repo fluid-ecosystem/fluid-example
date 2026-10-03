@@ -31,5 +31,32 @@ services:
     environment:
       - BOOTSTRAP_SERVERS=kafka:9092
 
+  # Opt-in: the full producer/consumer API surface (headers, batches, custom
+  # partitioning, dead letters, retries), not a matched send/receive pair.
+  # Run with `docker compose --profile advanced up --build`.
+  example-advanced-receive:
+    profiles: ["advanced"]
+    build:
+      context: ./example-advanced-receive
+    container_name: example-advanced-receive
+    depends_on:
+      kafka:
+        condition: service_healthy
+    environment:
+      - BOOTSTRAP_SERVERS=kafka:9092
+
+  example-advanced-send:
+    profiles: ["advanced"]
+    build:
+      context: ./example-advanced-send
+    container_name: example-advanced-send
+    depends_on:
+      kafka:
+        condition: service_healthy
+      example-advanced-receive:
+        condition: service_started
+    environment:
+      - BOOTSTRAP_SERVERS=kafka:9092
+
 volumes:
   kafka_data:
