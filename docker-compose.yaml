@@ -105,6 +105,20 @@ services:
     environment:
       - MONGO_URI=mongodb://mongo:27017
 
+  # ORM. Run with `docker compose --profile postgres-hibernate up --build`.
+  example-postgres-hibernate:
+    profiles: ["postgres-hibernate"]
+    build:
+      context: ./example-postgres-hibernate
+    container_name: example-postgres-hibernate
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      - POSTGRES_URL=jdbc:postgresql://postgres:5432/fluid
+      - POSTGRES_USER=fluid
+      - POSTGRES_PASSWORD=fluid
+
 volumes:
   kafka_data:
   postgres_data:
