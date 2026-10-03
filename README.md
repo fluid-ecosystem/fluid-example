@@ -14,10 +14,9 @@ each one a `Dockerfile` + `pom.xml` + plain `.java` files on top of
 | [example-postgres-jdbc](example-postgres-jdbc) | Database read/write, no ORM — raw `java.sql` against Postgres | `docker compose --profile postgres-jdbc up --build` |
 | [example-h2](example-h2) | Database read/write, no ORM — embedded in-memory H2, no container | `docker compose --profile h2 up --build` |
 | [example-mongo](example-mongo) | Database read/write against a document store (MongoDB), no DDL | `docker compose --profile mongo up --build` |
+| [example-postgres-hibernate](example-postgres-hibernate) | Database read/write with an ORM — Hibernate entities and HQL against Postgres | `docker compose --profile postgres-hibernate up --build` |
 
-Postgres with Hibernate (ORM) is tracked in
-[#14](https://github.com/fluid-ecosystem/fluid-example/issues/14) and lands
-as its own module next.
+All items tracked in [#14](https://github.com/fluid-ecosystem/fluid-example/issues/14) are now in.
 
 ## Quickstart
 
