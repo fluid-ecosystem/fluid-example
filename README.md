@@ -1,5 +1,11 @@
 # fluid-example
 
+[![Test the Echosystem](https://github.com/fluid-ecosystem/fluid-example/actions/workflows/run-the-echosystem.yml/badge.svg)](https://github.com/fluid-ecosystem/fluid-example/actions/workflows/run-the-echosystem.yml)
+[![Test Database Examples](https://github.com/fluid-ecosystem/fluid-example/actions/workflows/test-database-examples.yml/badge.svg)](https://github.com/fluid-ecosystem/fluid-example/actions/workflows/test-database-examples.yml)
+[![GitHub release](https://img.shields.io/github/v/release/fluid-ecosystem/fluid-example?label=release)](https://github.com/fluid-ecosystem/fluid-example/releases/latest)
+[![Built on fluid-builder](https://img.shields.io/docker/v/maifeeulasad/fluid-builder?sort=semver&label=fluid-builder&logo=docker&logoColor=white)](https://github.com/fluid-ecosystem/fluid-builder)
+[![Dependabot](https://img.shields.io/badge/dependabot-enabled-brightgreen?logo=dependabot&logoColor=white)](https://github.com/fluid-ecosystem/fluid-example/security/dependabot)
+
 Runnable examples built against
 [fluid-ecosystem/fluid-builder](https://github.com/fluid-ecosystem/fluid-builder),
 each one a `Dockerfile` + `pom.xml` + plain `.java` files on top of
@@ -18,6 +24,19 @@ each one a `Dockerfile` + `pom.xml` + plain `.java` files on top of
 
 All items tracked in [#14](https://github.com/fluid-ecosystem/fluid-example/issues/14) are now in.
 
+## Libraries demonstrated
+
+Each example adds exactly what it needs to its own `pom.xml`; nothing here
+is bundled by `fluid-builder` itself — see its own README for what is.
+
+| Library | Version | Used by |
+|---|---|---|
+| [`kafka-clients`](https://mvnrepository.com/artifact/org.apache.kafka/kafka-clients) | 3.9.2 | every Kafka example |
+| [`postgresql`](https://jdbc.postgresql.org/) (JDBC driver) | 42.7.13 | example-postgres-jdbc, example-postgres-hibernate |
+| [`hibernate-core`](https://hibernate.org/orm/) | 6.6.4.Final | example-postgres-hibernate |
+| [`h2`](https://www.h2database.com/) | 2.3.232 | example-h2 |
+| [`mongodb-driver-sync`](https://www.mongodb.com/docs/drivers/java/sync/current/) | 4.11.1 | example-mongo |
+
 ## Quickstart
 
 ```bash
@@ -30,7 +49,13 @@ demonstrates and, where relevant, Kubernetes manifests.
 
 ## CI
 
-[`.github/workflows/run-the-echosystem.yml`](.github/workflows/run-the-echosystem.yml)
-builds `fluid-builder` from source (not the published image, so a PR tests
-its own changes), brings up the default compose stack, and asserts the
-expected message counts arrive.
+Both workflows build `fluid-builder` from source rather than pulling the
+published image, so a PR against either repo is tested against its own
+changes:
+
+- [`run-the-echosystem.yml`](.github/workflows/run-the-echosystem.yml) —
+  brings up the default compose stack, asserts the expected Kafka message
+  counts arrive.
+- [`test-database-examples.yml`](.github/workflows/test-database-examples.yml) —
+  one job per database example, each bringing up its own Compose profile
+  and asserting its success line appears.
