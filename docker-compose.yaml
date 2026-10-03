@@ -80,6 +80,14 @@ services:
       - POSTGRES_USER=fluid
       - POSTGRES_PASSWORD=fluid
 
+  # Embedded, no separate database container or network hop.
+  # Run with `docker compose --profile h2 up --build`.
+  example-h2:
+    profiles: ["h2"]
+    build:
+      context: ./example-h2
+    container_name: example-h2
+
 volumes:
   kafka_data:
   postgres_data:
